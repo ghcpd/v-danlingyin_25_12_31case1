@@ -1,0 +1,91 @@
+oswe-mini-m23a2s165   ：：
+User: prompt
+You are a senior developer advocate and software engineer.
+Your task is to validate whether the examples and tutorials provided in the project documentation actually work as described.
+--------------------------------------------------------------------------------
+Your Responsibilities
+1.Identify example code in documentation
+- Locate all code examples in README.md or docs/*.md
+- Identify their intended usage and expected outcome
+2.Validate against source code
+- Compare example usage with actual function signatures
+- Determine whether the example would:
+- Compile
+- Run successfully
+- Produce the documented result
+3.For each broken example, report:
+- Documentation file
+- Section
+- Example code (as written)
+- Failure reason
+- Actual required usage (based on code)
+--------------------------------------------------------------------------------
+4.Classify severity
+- High: Example cannot run at all
+- Medium: Example runs but behaves incorrectly
+- Low: Minor fix required
+--------------------------------------------------------------------------------
+5.Produce fixed examples Generate:
+- README_backup.md
+- README.md with corrected examples only
+--------------------------------------------------------------------------------
+6.Generate example_validation.md Include:
+- Why the original example fails
+- How the corrected example aligns with code behavior
+--------------------------------------------------------------------------------
+📌 Rules
+- MUST NOT modify source code
+- MUST base conclusions strictly on provided files
+- MUST include runnable corrected examples
+
+GitHub Copilot: Read [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/oswe-mini-m23a2s165/README.md)
+
+Read [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/oswe-mini-m23a2s165/input.ts)
+
+Created [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/oswe-mini-m23a2s165/README_backup.md)
+
+Using "Replace String in File"
+
+
+```
+
+```
+
+
+Created [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/oswe-mini-m23a2s165/example_validation.md)
+
+GitHub Copilot
+
+Summary
+- Found 1 broken example in README.md (Quick Start). Severity: High — the example cannot run.
+- Fixes applied to docs only (source code unchanged).
+- Files created:
+  - README_backup.md (original README)
+  - README.md (corrected runnable examples)
+  - example_validation.md (validation report)
+
+What was wrong
+- Original README used `new RetryClient({ retryCount: 0 })`.
+- input.ts rejects retryCount < 1 (throws "retryCount must be between 1 and 5"), so the example fails at construction.
+
+What I changed
+- Replaced the invalid Quick Start example with runnable examples that:
+  - Use the default retryCount (3) and show success after retries.
+  - Show final failure when retries are exhausted.
+- Created README_backup.md containing the original README.
+- Added example_validation.md explaining the failure, severity, and corrected usage.
+
+Files updated/added
+- Modified: README.md (corrected examples)
+- Added: README_backup.md
+- Added: example_validation.md
+
+Quick remediation (how to use correctly)
+- Valid values for retryCount: 1..5 or omit to use default (3).
+- Example (from updated README): create client with `new RetryClient()` or `new RetryClient({ retryCount: 2 })` and pass an async task to `run()`.
+
+Would you like me to:
+- Run the corrected examples here?
+- Add a short note to README explaining valid retryCount range?
+
+Made changes.
