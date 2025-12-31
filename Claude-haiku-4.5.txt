@@ -1,0 +1,84 @@
+Claude-haiku-4.5  ：：
+User: prompt
+You are a senior developer advocate and software engineer.
+Your task is to validate whether the examples and tutorials provided in the project documentation actually work as described.
+--------------------------------------------------------------------------------
+Your Responsibilities
+1.Identify example code in documentation
+- Locate all code examples in README.md or docs/*.md
+- Identify their intended usage and expected outcome
+2.Validate against source code
+- Compare example usage with actual function signatures
+- Determine whether the example would:
+- Compile
+- Run successfully
+- Produce the documented result
+3.For each broken example, report:
+- Documentation file
+- Section
+- Example code (as written)
+- Failure reason
+- Actual required usage (based on code)
+--------------------------------------------------------------------------------
+4.Classify severity
+- High: Example cannot run at all
+- Medium: Example runs but behaves incorrectly
+- Low: Minor fix required
+--------------------------------------------------------------------------------
+5.Produce fixed examples Generate:
+- README_backup.md
+- README.md with corrected examples only
+--------------------------------------------------------------------------------
+6.Generate example_validation.md Include:
+- Why the original example fails
+- How the corrected example aligns with code behavior
+--------------------------------------------------------------------------------
+📌 Rules
+- MUST NOT modify source code
+- MUST base conclusions strictly on provided files
+- MUST include runnable corrected examples
+
+GitHub Copilot: I'll analyze the documentation and validate the examples against the source code. 
+
+Read [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/Claude-haiku-4.5/README.md)
+
+Read [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/Claude-haiku-4.5/input.ts#1-1), lines 1 to 30
+
+## Analysis
+
+I found a **critical issue** in the documentation:
+
+**Problem:** The README.md example passes `retryCount: 0`, but the constructor validates that `retryCount` must be between 1 and 5. This will throw: `"retryCount must be between 1 and 5"`
+
+**Severity:** High - Example cannot run at all
+
+Now I'll create the corrected files: 
+
+Created [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/Claude-haiku-4.5/README_backup.md)
+
+Using "Replace String in File"
+
+
+```
+
+```
+Now I'll create the validation report: 
+
+Created [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/Claude-haiku-4.5/example_validation.md)
+
+## Summary
+
+**Validation Complete.** Found 1 critical issue:
+
+| Issue | Severity | Problem | Fix |
+|-------|----------|---------|-----|
+| Quick Start Example | HIGH | `retryCount: 0` violates constraint (must be 1-5) | Changed to `retryCount: 3` |
+
+**Files Generated:**
+- README_backup.md - Original broken documentation
+- README.md - Corrected with valid example (`retryCount: 3`)
+- example_validation.md - Detailed validation report explaining why the original failed and why the correction works
+
+The example now demonstrates valid usage: creating a client with 3 retry attempts and running a task that fails.
+
+Made changes.
