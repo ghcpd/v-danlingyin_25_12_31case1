@@ -1,0 +1,151 @@
+oswe-mini-prime-new   ：：
+User: prompt
+You are a senior developer advocate and software engineer.
+Your task is to validate whether the examples and tutorials provided in the project documentation actually work as described.
+--------------------------------------------------------------------------------
+Your Responsibilities
+1.Identify example code in documentation
+- Locate all code examples in README.md or docs/*.md
+- Identify their intended usage and expected outcome
+2.Validate against source code
+- Compare example usage with actual function signatures
+- Determine whether the example would:
+- Compile
+- Run successfully
+- Produce the documented result
+3.For each broken example, report:
+- Documentation file
+- Section
+- Example code (as written)
+- Failure reason
+- Actual required usage (based on code)
+--------------------------------------------------------------------------------
+4.Classify severity
+- High: Example cannot run at all
+- Medium: Example runs but behaves incorrectly
+- Low: Minor fix required
+--------------------------------------------------------------------------------
+5.Produce fixed examples Generate:
+- README_backup.md
+- README.md with corrected examples only
+--------------------------------------------------------------------------------
+6.Generate example_validation.md Include:
+- Why the original example fails
+- How the corrected example aligns with code behavior
+--------------------------------------------------------------------------------
+📌 Rules
+- MUST NOT modify source code
+- MUST base conclusions strictly on provided files
+- MUST include runnable corrected examples
+
+GitHub Copilot: Great! I found the Quick Start example uses `retryCount: 0` which triggers the constructor to throw. My next step is to back up README.md, replace the example with a runnable one that demonstrates retry behavior, and add `example_validation.md` with the analysis. Proceeding to create the backup and edit files now.
+
+Read [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/oswe-mini-prime-new/README.md)
+
+Proceeding to back up README.md and replace the Quick Start example with runnable code. Next I'll add `example_validation.md` documenting why the original failed and how the corrected example aligns with the code.
+
+Created [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/oswe-mini-prime-new/README_backup.md)
+
+Using "Replace String in File"
+
+
+```
+
+```
+
+
+Created [](file:///Users/danling.yin/Documents/Microsoft/Bugbash/1231/case1/oswe-mini-prime-new/example_validation.md)
+
+Perfect! The failing Quick Start example was fixed: I backed up README.md to README_backup.md, updated README.md with runnable examples (success after one retry and final failure after retries), and added example_validation.md explaining the issue and fixes. My next step is to run the corrected examples locally if you'd like—I can add an `examples/` folder and an npm script to run them.## ✅ Summary (Wrap-up)
+**What I found:** The Quick Start example in README.md uses `retryCount: 0`, which causes the `RetryClient` constructor to throw.  
+**What I did:** Backed up the README (README_backup.md), replaced the example with runnable, correct examples in README.md, and added example_validation.md documenting the issue and the fixes.
+
+---
+
+## 🔍 Validation Results
+
+### Broken example
+- **Documentation file:** README.md  
+- **Section:** Quick Start  
+- **Example code (as written):**
+```ts
+import { RetryClient } from "./input";
+
+const client = new RetryClient({
+  retryCount: 0
+});
+
+client.run(async () => {
+  throw new Error("fail once");
+});
+```
+- **Failure reason:** The constructor enforces `retryCount` to be between 1 and 5:
+```ts
+const count = options.retryCount ?? 3;
+if (count < 1 || count > 5) {
+  throw new Error("retryCount must be between 1 and 5");
+}
+```
+Passing `retryCount: 0` causes the constructor to throw immediately, so the example cannot run at all.
+- **Severity:** **High** — example cannot run.
+
+### Actual required usage
+- Use `retryCount` in the range `[1, 5]` or omit it (default is `3`).
+- `run` returns a `Promise<void>` — examples should `await` the call (or handle the promise).
+
+---
+
+## 🔧 Corrected / Runnable Examples (now in README.md)
+1) Demonstrate retrying once then succeeding:
+```ts
+import { RetryClient } from "./input";
+
+(async () => {
+  const client = new RetryClient({ retryCount: 2 });
+  let attempts = 0;
+
+  await client.run(async () => {
+    attempts++;
+    if (attempts === 1) throw new Error("fail once");
+    console.log("Task succeeded on attempt", attempts);
+  });
+})();
+```
+- Why it works: `retryCount` is valid (2). The `run` loop will retry once after the initial failure and then succeed.
+
+2) Demonstrate final failure after retries:
+```ts
+import { RetryClient } from "./input";
+
+(async () => {
+  const client = new RetryClient({ retryCount: 2 });
+  try {
+    await client.run(async () => {
+      throw new Error("always fails");
+    });
+  } catch (err) {
+    console.error("Expected failure:", (err as Error).message); // "Task failed after retries"
+  }
+})();
+```
+- Why it works: This shows that if the task always fails, `run` throws `"Task failed after retries"` once retries are exhausted.
+
+---
+
+## 🗂 Files I added/updated
+- Added: README_backup.md — a copy of the original README (backup). ✅  
+- Updated: README.md — replaced Quick Start example with runnable examples. ✅  
+- Added: example_validation.md — explains why the original failed, severity, and provides the corrected examples (includes the same content as summarized above). ✅
+
+---
+
+## 💡 Notes & Recommendations
+- Leave the runtime validation (constructor check) in place — it's intentional and correct.  
+- Keep examples `await`-ing `run` to ensure the async behavior is shown and errors are observable.  
+- If you want, I can add an `examples/` directory with runnable `example.ts` files and a `package.json` script (e.g., using `ts-node`) to make it trivial to run the corrected examples locally — say the word and I’ll add them (no source changes required).
+
+---
+
+If you'd like, I can now add runnable example files and an npm script so you can run them locally (I won't change source code; just add examples and a dev script). Would you like me to proceed?
+
+Made changes.
